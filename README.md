@@ -12,7 +12,7 @@ Go to your browser of choice and enter http://localhost:5031/
 - You can double click the text of the boat name, length and width to modify the values, when you click off or press enter then the value will be updated.
 
 
-There is also another project which contains some Unit Test Cases. Simple run the unit cases by opening the files and running or debugging these.
+There is also another project which contains some Unit Test Cases. Simply run the unit cases by opening the files and running or debugging them.
 
 
 
