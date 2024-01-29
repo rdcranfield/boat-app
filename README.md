@@ -8,8 +8,12 @@ I modified the run configurations as below which works for the ports on my machi
 
 ![Screenshot 2024-01-29 at 20 08 45](https://github.com/rdcranfield/boat-app/assets/36520843/3e419b25-dac1-408b-963f-0720eec54feb)
 
+Go to your browser of choice and enter http://localhost:5031/
+- You can double click the text of the boat name, length and width to modify the values, when you click off or press enter then the value will be updated.
+
 
 There is also another project which contains some Unit Test Cases. Simple run the unit cases by opening the files and running or debugging these.
+
 
 
 Improvements I would like to add in future.
