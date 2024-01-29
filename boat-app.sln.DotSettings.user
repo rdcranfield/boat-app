@@ -1,0 +1,9 @@
+﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=baf4ab60_002D68da_002D4e43_002D9232_002D82f5cddb8cef/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="Tests" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;TestAncestor&gt;
+    &lt;TestId&gt;NUnit3x::55D6E143-24E5-48A5-B391-84C3D8EF42CC::net8.0::boat_app_v2.tests.UnitTests.Tests&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::55D6E143-24E5-48A5-B391-84C3D8EF42CC::net8.0::boat_app_v2.tests.IntegrationTests.BoatRuleTest&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::55D6E143-24E5-48A5-B391-84C3D8EF42CC::net8.0::boat_app_v2.tests.ReactTests.UnitTests.JSEngineTest.CallFunctionReturningJsonHandlesScalarReturnValue&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::55D6E143-24E5-48A5-B391-84C3D8EF42CC::net8.0::boat_app_v2.tests.ReactTests.UnitTests.JSEngineTest.Test_JsonReturn&lt;/TestId&gt;
+  &lt;/TestAncestor&gt;
+&lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
