@@ -22,11 +22,11 @@ public class BoatRepositoryController: ControllerBase
 
    
     [HttpGet] 
-    public IActionResult GetAllBoats() 
+    public async Task<IActionResult> GetAllBoats() 
     { 
         try
         {
-            var boats = Repository.BoatRepository.GetAllBoats();
+            var boats = await Repository.BoatRepository.GetAllBoatsAsync();
 
             // map to data transfer object, only used for testing
             var result = Mapper.Map<IEnumerable<BoatObject>>(boats);
@@ -42,11 +42,11 @@ public class BoatRepositoryController: ControllerBase
     }
     
     [HttpGet] 
-    public IActionResult GetBoatById(string id) 
+    public async Task<IActionResult> GetBoatById(string id) 
     { 
         try 
         { 
-            var boat = Repository.BoatRepository.GetBoatById(id); 
+            var boat = await Repository.BoatRepository.GetBoatByIdAsync(id); 
             _logger.LogInformation("Returning boat by Id from database.");
             
             if (boat == null) return NotFound(boat);
@@ -62,7 +62,7 @@ public class BoatRepositoryController: ControllerBase
     }
     
     [HttpPost] 
-    public IActionResult CreateBoat([FromBody] Boat boat) 
+    public async Task<IActionResult> CreateBoat([FromBody] Boat boat) 
     { 
         try
         {
@@ -71,13 +71,15 @@ public class BoatRepositoryController: ControllerBase
             {
                 return BadRequest(boat);
             }
-            if (Repository.BoatRepository.GetBoatById(boat.Code!) != null)
+            var aBoat = await Repository.BoatRepository.GetBoatByIdAsync(boat.Code!);
+
+            if (aBoat != null)
             {
                 return Conflict(boat);
             }
             
             Repository.BoatRepository.CreateBoat(boat);
-            Repository.Save();
+            await Repository.SaveAsync();
             
             _logger.LogInformation("Created boat in database.");
             
@@ -92,15 +94,17 @@ public class BoatRepositoryController: ControllerBase
     }
     
     [HttpPost] 
-    public IActionResult UpdateBoat([FromBody] Boat? boat) 
+    public async Task<IActionResult> UpdateBoat([FromBody] Boat? boat) 
     { 
         try
         {
             if (boat == null) return BadRequest(boat);
-            if (Repository.BoatRepository.GetBoatById(boat.Code!) == null) return NotFound(boat);
+            
+            var aBoat = await Repository.BoatRepository.GetBoatByIdAsync(boat.Code!);
+            if (aBoat == null) return NotFound(boat);
             
             Repository.BoatRepository.UpdateBoat(boat);
-            Repository.Save();
+            await Repository.SaveAsync();
             
             _logger.LogInformation("Updated boat in database.");
             
@@ -115,11 +119,12 @@ public class BoatRepositoryController: ControllerBase
     }
     
     [HttpDelete("{id}")]
-    public IActionResult DeleteBoat(string id)
+    public async Task<IActionResult> DeleteBoat(string id)
     {
         try
         {
-            var boat = Repository.BoatRepository.GetBoatById(id);
+            var boat = await Repository.BoatRepository.GetBoatByIdAsync(id);
+
             if (boat == null)
             {
                 _logger.LogError($"Boat with id: {id}, not found in the db.");
@@ -127,7 +132,7 @@ public class BoatRepositoryController: ControllerBase
             }
 
             Repository.BoatRepository.DeleteBoat(boat);
-            Repository.Save();
+            await Repository.SaveAsync();
 
             return Ok(id); 
         }

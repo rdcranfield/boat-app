@@ -12,9 +12,9 @@ public abstract class Repository<T> : IRepository<T> where T : class
         _context = context;
     }
 
-    public IEnumerable<T?>  FindAll() => _context.Set<T>();
+    public IQueryable<T?>  FindAll() => _context.Set<T>();
 
-    public IEnumerable<T> FindByCondition(Expression<Func<T, bool>> expression) => 
+    public IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression) => 
         _context.Set<T>().Where(expression).AsNoTracking();
 
     public void Create(T entity) => _context.Set<T>().Add(entity);

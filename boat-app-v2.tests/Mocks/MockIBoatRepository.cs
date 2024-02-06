@@ -49,9 +49,9 @@ internal abstract class MockIBoatRepository
                 Width = 2.5908,
             }
         };
-        mock.Setup(m => m.GetAllBoats()).Returns(() => boats);
+        mock.Setup(m => m.GetAllBoatsAsync().Result).Returns(() => boats);
 
-        mock.Setup(m => m.GetBoatById(It.IsAny<string>()))
+        mock.Setup(m => m.GetBoatByIdAsync(It.IsAny<string>()).Result)
             .Returns((string code) => boats.FirstOrDefault(o => o.Code == code));
 
         mock.Setup(m => m.CreateBoat(It.IsAny<Boat>()))

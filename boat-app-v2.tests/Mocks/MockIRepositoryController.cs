@@ -11,7 +11,7 @@ namespace boat_app_v2.tests.Mocks
             var boatRepoMock = MockIBoatRepository.GetMock();
 
             mock.Setup(m => m.BoatRepository).Returns(() => boatRepoMock.Object);
-            mock.Setup(m => m.Save()).Callback(() => { return; });
+            mock.Setup(m => m.SaveAsync()).Callback(() => { return; });
 
             return mock;
         }

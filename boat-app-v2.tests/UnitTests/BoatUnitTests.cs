@@ -41,7 +41,7 @@ public class Tests
     [Test]
     public void Test_GetAllBoats()
     {
-        var result = _boatRepositoryController!.GetAllBoats() as ObjectResult;
+        var result = _boatRepositoryController!.GetAllBoats().Result as ObjectResult;
         Assert.NotNull(result);
         Assert.That(result!.StatusCode, Is.EqualTo(StatusCodes.Status200OK));
         Assert.IsAssignableFrom<List<BoatObject>>(result.Value);
@@ -53,13 +53,13 @@ public class Tests
     {
         //test inactive code
         Debug.Assert(_boatRepositoryController != null, nameof(_boatRepositoryController) + " != null");
-        var result = _boatRepositoryController.GetBoatById(InactiveBoatCode) as ObjectResult;
+        var result = _boatRepositoryController.GetBoatById(InactiveBoatCode).Result as ObjectResult;
         Assert.That(result!.StatusCode,  Is.EqualTo(StatusCodes.Status404NotFound));
         var boat = result.Value as Boat;
         Assert.That(boat,  Is.EqualTo(null));
 
         //test active code
-        result = _boatRepositoryController.GetBoatById(ActiveBoatCode) as ObjectResult;
+        result = _boatRepositoryController.GetBoatById(ActiveBoatCode).Result as ObjectResult;
         Assert.That(result!.StatusCode,  Is.EqualTo(StatusCodes.Status200OK));
         Assert.NotNull(result);
         boat = result.Value as Boat;
@@ -77,7 +77,7 @@ public class Tests
         };
         
         //test incorrect code
-        var result = _boatRepositoryController?.CreateBoat(createBoat) as ObjectResult;
+        var result = _boatRepositoryController?.CreateBoat(createBoat).Result as ObjectResult;
         Assert.That(result!.StatusCode,  Is.EqualTo(StatusCodes.Status400BadRequest));
 
         //test unique code, try create boat with an existing code
@@ -85,7 +85,7 @@ public class Tests
         {
             Code = ActiveBoatCode
         };
-        result = _boatRepositoryController?.CreateBoat(createBoat) as ObjectResult;
+        result = _boatRepositoryController?.CreateBoat(createBoat).Result as ObjectResult;
         Assert.That(result!.StatusCode,  Is.EqualTo(StatusCodes.Status409Conflict));
         
         //test new code, ´
@@ -93,7 +93,7 @@ public class Tests
         {
             Code = InactiveBoatCode
         };
-        result = _boatRepositoryController?.CreateBoat(createBoat) as ObjectResult;
+        result = _boatRepositoryController?.CreateBoat(createBoat).Result as ObjectResult;
         Assert.That(result!.StatusCode,  Is.EqualTo(StatusCodes.Status200OK));
         Assert.NotNull(result);
         var boat = result.Value as Boat;
@@ -107,18 +107,18 @@ public class Tests
     public void Test_UpdateBoat()
     {
         // test update on existing boat
-        var result = _boatRepositoryController?.GetBoatById(ActiveBoatCode) as ObjectResult;
+        var result = _boatRepositoryController?.GetBoatById(ActiveBoatCode).Result as ObjectResult;
         var boat = result!.Value as Boat;
         boat!.Name = "test";
         
-        result = _boatRepositoryController?.UpdateBoat(boat) as ObjectResult;
+        result = _boatRepositoryController?.UpdateBoat(boat).Result as ObjectResult;
         Assert.NotNull(result);
         Assert.That(result!.StatusCode, Is.EqualTo(StatusCodes.Status200OK));
         boat = result.Value as Boat;
         Assert.That(boat!.Name,  Is.EqualTo("test"));
         
         // test null update
-        result = _boatRepositoryController?.UpdateBoat(null) as ObjectResult;
+        result = _boatRepositoryController?.UpdateBoat(null).Result as ObjectResult;
         Assert.That(result!.StatusCode,  Is.EqualTo(StatusCodes.Status400BadRequest));
 
         // test update on boat that does not exist
@@ -126,17 +126,17 @@ public class Tests
         {
             Code = InactiveBoatCode
         };
-        result = _boatRepositoryController?.UpdateBoat(imaginaryBoat) as ObjectResult;
+        result = _boatRepositoryController?.UpdateBoat(imaginaryBoat).Result as ObjectResult;
         Assert.That(result!.StatusCode,  Is.EqualTo(StatusCodes.Status404NotFound));
     }
     
     [Test]
     public void Test_DeleteBoat()
     {
-        var result = _boatRepositoryController?.DeleteBoat(ActiveBoatCode) as ObjectResult;
+        var result = _boatRepositoryController?.DeleteBoat(ActiveBoatCode).Result as ObjectResult;
         Assert.That(result!.StatusCode, Is.EqualTo(StatusCodes.Status200OK));
         
-        result = _boatRepositoryController?.DeleteBoat(InactiveBoatCode) as ObjectResult;
+        result = _boatRepositoryController?.DeleteBoat(InactiveBoatCode).Result as ObjectResult;
         Assert.That(result!.StatusCode, Is.EqualTo(StatusCodes.Status404NotFound));
     }
     
@@ -144,7 +144,7 @@ public class Tests
     public void Test_Code()
     {
         BoatModel model = new BoatModel();
-        var result = _boatRepositoryController?.GetAllBoats() as ObjectResult;
+        var result = _boatRepositoryController?.GetAllBoats().Result as ObjectResult;
         var listToConvert = (List<BoatObject>)result!.Value!;
 
         //ensure 9 and z are reset and 4 is incremented

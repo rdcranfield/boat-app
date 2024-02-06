@@ -59,7 +59,7 @@ public abstract class ControllerTest  : IClassFixture<WebApplicationFactory<Star
 
         // Use a separate instance of the context to verify correct data was saved to database
         using var context = new BoatContext(Options);
-        Assert.That(context.Boats.Count(), Is.EqualTo(1));
+        Assert.That(context.Boats!.Count(), Is.EqualTo(1));
     }
 
     private static IConfiguration InitConfiguration()

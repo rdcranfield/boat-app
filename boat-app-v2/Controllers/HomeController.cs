@@ -16,45 +16,48 @@ public class HomeController : Controller
 
     [Route("boats")]
     [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
-    public ActionResult AllBoats()
+    public async Task<IActionResult> AllBoats()
     {
-        return Json(_repository.BoatRepository.GetAllBoats());
+        var allBoats = await _repository.BoatRepository.GetAllBoatsAsync();
+        return Json(allBoats);
     }
     
     [Route("boats/new")]
     [HttpPost]
-    public ActionResult AddBoat(Boat boat)
+    public async Task<IActionResult> AddBoat(Boat boat)
     {
-        boat.Code = _boatModel.GetNewCode(_repository.BoatRepository.GetAllBoats().Last());
+        var lastBoat = await _repository.BoatRepository.GetAllBoatsAsync();
+        boat.Code = _boatModel.GetNewCode(lastBoat.Last());
 
         _repository.BoatRepository.CreateBoat(boat);
-        _repository.Save();
+        await _repository.SaveAsync();
         
         return Content("Success :)");
     }
     
     [Route("boats/update")]
     [HttpPost]
-    public ActionResult UpdateBoat(Boat boat)
+    public async Task<IActionResult> UpdateBoat(Boat boat)
     {
         _repository.BoatRepository.UpdateBoat(boat);
-        _repository.Save();
+        await _repository.SaveAsync();
 
         return Content("Success :)");
     }
     
     [Route("boats/delete")]
     [HttpPost]
-    public ActionResult DeleteBoat(Boat boat)
+    public async Task<IActionResult> DeleteBoat(Boat boat)
     {
         _repository.BoatRepository.DeleteBoat(boat);
-        _repository.Save();
+        await _repository.SaveAsync();
 
         return Content("Success :)");
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        return View(_repository.BoatRepository.GetAllBoats());
+        var allBoats = await _repository.BoatRepository.GetAllBoatsAsync();
+        return View(allBoats);
     }
 }
