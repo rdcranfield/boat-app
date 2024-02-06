@@ -1,15 +1,13 @@
-using boat_app_v2.Entities.Models;
 using boat_app_v2.Services;
 
-namespace boat_app_v2.Models;
+namespace boat_app_v2.Entities.Models;
 
 public class BoatModel
 {
-    private RuleService rules = new RuleService();
+    private readonly RuleService _rules = new RuleService();
 
-    public string GetNewCode(IEnumerable<Boat> boats)
+    public string GetNewCode(Boat? boat)
     {
-        var x = boats.OrderBy(b => b.Code).ToArray();
-        return rules.IncrementBoatCode(x[boats.Count()-1].Code);
+        return _rules.IncrementBoatCode(boat!.Code!);
     }
 }

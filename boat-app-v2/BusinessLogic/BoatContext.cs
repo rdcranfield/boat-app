@@ -11,7 +11,7 @@ namespace boat_app_v2.BusinessLogic
             //this.SeedData();
         }
 
-        public DbSet<Boat> Boats { get; set; }
+        public DbSet<Boat>? Boats { get; set; }
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         { 

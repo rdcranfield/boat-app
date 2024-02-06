@@ -96,10 +96,10 @@ class EditableText extends React.Component {
     };
 
     validateInput() {
-        if(this.props.initialText.trim() === this.state.text.trim()) return;
-        if(this.state.text.trim().length === 0) return;
         if(this.state.type === "length" || this.state.type === "width")
             if(isNaN(+this.state.text)) return;
+        if(this.props.initialText === this.state.text.trim()) return;
+        if(this.state.text.trim().length === 0) return;
     }
     updateBoat() {
         if(this.state.type === "name") this.state.boat.name = this.state.text

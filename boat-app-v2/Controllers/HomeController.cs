@@ -1,47 +1,34 @@
-using AutoMapper;
+using boat_app_v2.BusinessLogic.Repository;
 using boat_app_v2.Entities.Models;
-using boat_app_v2.Models;
-using boat_app_v2.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace boat_app_v2.Controllers;
 
 public class HomeController : Controller
 { 
+    private readonly BoatModel _boatModel = new BoatModel(); 
+    private readonly IRepositoryController _repository;
     
-    private BoatModel _boatModel = new BoatModel(); 
-    private readonly IMapper mapper;
-    private BoatService _service;
-    
-    public HomeController(BoatService service)
+    public HomeController(IRepositoryController repository)
     {
-        mapper = GetMapper();
-        _service = service;
-        //_repository = repository;
-    }
-
-    public static IMapper GetMapper()
-    {
-        var mappingProfile = new MappingProfile();
-        var configuration = new MapperConfiguration(cfg => cfg.AddProfile(mappingProfile));
-        return new Mapper(configuration);
+        this._repository = repository;
     }
 
     [Route("boats")]
-   // [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
+    [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
     public ActionResult AllBoats()
     {
-        return Json(_service.repository.BoatRepository.GetAllBoats());
+        return Json(_repository.BoatRepository.GetAllBoats());
     }
     
     [Route("boats/new")]
     [HttpPost]
     public ActionResult AddBoat(Boat boat)
     {
-        boat.Code = _boatModel.GetNewCode(_service.repository.BoatRepository.GetAllBoats());
+        boat.Code = _boatModel.GetNewCode(_repository.BoatRepository.GetAllBoats().Last());
 
-        _service.repository.BoatRepository.CreateBoat(boat);
-        _service.repository.Save();
+        _repository.BoatRepository.CreateBoat(boat);
+        _repository.Save();
         
         return Content("Success :)");
     }
@@ -50,8 +37,8 @@ public class HomeController : Controller
     [HttpPost]
     public ActionResult UpdateBoat(Boat boat)
     {
-        _service.repository.BoatRepository.UpdateBoat(boat);
-        _service.repository.Save();
+        _repository.BoatRepository.UpdateBoat(boat);
+        _repository.Save();
 
         return Content("Success :)");
     }
@@ -60,15 +47,14 @@ public class HomeController : Controller
     [HttpPost]
     public ActionResult DeleteBoat(Boat boat)
     {
-        _service.repository.BoatRepository.DeleteBoat(boat);
-        _service.repository.Save();
+        _repository.BoatRepository.DeleteBoat(boat);
+        _repository.Save();
 
         return Content("Success :)");
     }
 
-    // GET
     public IActionResult Index()
     {
-        return View(_service.repository.BoatRepository.GetAllBoats());
+        return View(_repository.BoatRepository.GetAllBoats());
     }
 }

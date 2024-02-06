@@ -3,17 +3,16 @@ using AutoMapper;
 using boat_app_v2.BusinessLogic.Repository;
 using boat_app_v2.Entities.DataTransferObjects;
 using boat_app_v2.Entities.Models;
-using boat_app_v2.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace boat_app_v2.Controllers;
 
 public class BoatRepositoryController: ControllerBase
 {
-    private ILogger<BoatRepositoryController> _logger;
-    public IRepositoryController Repository { get; }
-    public IMapper Mapper { get; } 
-        
+    private readonly ILogger<BoatRepositoryController> _logger;
+    private IRepositoryController Repository { get; }
+    private IMapper Mapper { get; }
+
     public BoatRepositoryController(ILogger<BoatRepositoryController> logger, IRepositoryController repository, IMapper mapper) 
     { 
         _logger = logger; 
@@ -27,22 +26,17 @@ public class BoatRepositoryController: ControllerBase
     { 
         try
         {
-            var boats = Repository.BoatRepository.GetAllBoats() 
-                .OrderBy(boat => boat.Code)
-                .ToList(); 
-            
-            RuleService rules = new RuleService(); 
-            rules.IncrementBoatCode(boats[boats.Count-1].Code);
+            var boats = Repository.BoatRepository.GetAllBoats();
 
-            // map to data transfer object
+            // map to data transfer object, only used for testing
             var result = Mapper.Map<IEnumerable<BoatObject>>(boats);
             
             return Ok(result); 
         } 
         catch (Exception ex) 
         { 
-           // _logger.LogError($"Something went wrong inside GetAllBoats action: {ex.Message}"); 
-                
+            _logger.LogError($"Something went wrong inside GetAllBoats action: {ex.Message}"); 
+            
             return StatusCode(500, "Internal server error"); 
         } 
     }
@@ -73,11 +67,11 @@ public class BoatRepositoryController: ControllerBase
         try
         {
             //not really needed, considering user never defines the code, the back-end does
-            if (!Regex.Match(boat.Code, @"^[A-Za-z]{4}-[0-9]{4}-[A-Za-z]{1}[0-9]{1}$", RegexOptions.IgnoreCase).Success)
+            if (!Regex.Match(boat.Code!, @"^[A-Za-z]{4}-[0-9]{4}-[A-Za-z]{1}[0-9]{1}$", RegexOptions.IgnoreCase).Success)
             {
                 return BadRequest(boat);
             }
-            if (Repository.BoatRepository.GetBoatById(boat.Code) != null)
+            if (Repository.BoatRepository.GetBoatById(boat.Code!) != null)
             {
                 return Conflict(boat);
             }
@@ -98,12 +92,12 @@ public class BoatRepositoryController: ControllerBase
     }
     
     [HttpPost] 
-    public IActionResult UpdateBoat([FromBody] Boat boat) 
+    public IActionResult UpdateBoat([FromBody] Boat? boat) 
     { 
         try
         {
             if (boat == null) return BadRequest(boat);
-            if (Repository.BoatRepository.GetBoatById(boat.Code) == null) return NotFound(boat);
+            if (Repository.BoatRepository.GetBoatById(boat.Code!) == null) return NotFound(boat);
             
             Repository.BoatRepository.UpdateBoat(boat);
             Repository.Save();

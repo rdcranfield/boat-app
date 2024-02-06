@@ -2,7 +2,6 @@
 
 using boat_app_v2.BusinessLogic.Repository;
 using boat_app_v2.Entities.Models;
-using boat_app_v2.Models;
 using Moq;
 
 namespace boat_app_v2.tests.Mocks;

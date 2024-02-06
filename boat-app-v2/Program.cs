@@ -12,7 +12,7 @@ namespace boat_app_v2
             {
                 var services = scope.ServiceProvider;
                 var context = services.GetService<BoatContext>();
-                context.SeedData();
+                context!.SeedData();
             }
             host.Run();
         }

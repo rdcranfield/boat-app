@@ -15,18 +15,20 @@ namespace boat_app_v2.tests.IntegrationTests;
 /// </summary>
 public abstract class ControllerTest  : IClassFixture<WebApplicationFactory<Startup>>, IDisposable
 {
-    protected BoatContext Context { get; set; }
+    private BoatContext Context { get; set; }
 
     protected readonly WebApplicationFactory<Startup> _factory;
     private readonly IConfiguration _configuration;
-    protected DbContextOptions<BoatContext> Options { get; private set; }
+    private DbContextOptions<BoatContext> Options { get; set; }
 
-    public ControllerTest(WebApplicationFactory<Startup> factory)
+    protected ControllerTest(WebApplicationFactory<Startup> factory, BoatContext context, DbContextOptions<BoatContext> options)
     {
-        _configuration = InitConfiguration();
-      //  _dbName = _configuration.GetValue<string>("DatabaseNames:ProductManApi");
-       // _testDatabase = new TestDatabase(new Logger<TestDatabase>(new LoggerFactory()), _dbName);
-            
+        Context = context;
+        Options = options;
+        _configuration = InitConfiguration(); 
+        var dbConnection = _configuration.GetConnectionString("DatabaseNames:BoatMonitorApi");
+
+        // _testDatabase = new TestDatabase(new Logger<TestDatabase>(new LoggerFactory()), _dbName);
         _factory = factory.WithWebHostBuilder(builder =>
         {
             // replace the actual services with the mocked ones
@@ -35,8 +37,7 @@ public abstract class ControllerTest  : IClassFixture<WebApplicationFactory<Star
                 {
                     // provide an instance instead of using DI to be able to manually modify that instance in the
                     // test preparation later on
-               //     services.Replace(ServiceDescriptor.Singleton<DatabasePoolForMySql>(_testDatabase));
-                    
+                    services.AddDbContextPool<BoatContext>(o => o.UseMySql(dbConnection, ServerVersion.AutoDetect(dbConnection)).UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
                 });
         });
 
@@ -57,13 +58,11 @@ public abstract class ControllerTest  : IClassFixture<WebApplicationFactory<Star
         
 
         // Use a separate instance of the context to verify correct data was saved to database
-        using (var context = new BoatContext(Options))
-        {
-            Assert.AreEqual(1, context.Boats.Count());
-        }
+        using var context = new BoatContext(Options);
+        Assert.That(context.Boats.Count(), Is.EqualTo(1));
     }
-    
-    public static IConfiguration InitConfiguration()
+
+    private static IConfiguration InitConfiguration()
     {
         var config = new ConfigurationBuilder()
             .AddJsonFile("appsettings.Development.json")
